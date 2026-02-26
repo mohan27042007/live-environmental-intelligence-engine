@@ -25,7 +25,8 @@ def main():
         'temp': float,
     }, mode='streaming')
 
-    tbl = src.with_columns(anomaly=pw.apply(detect, src.pm25))
+    # apply model call via lambda to keep Pathway happy with row-wise function
+    tbl = src.with_columns(anomaly=pw.apply(lambda x: detect(x), src.pm25))
 
     pw.io.print(tbl)
     pw.run()

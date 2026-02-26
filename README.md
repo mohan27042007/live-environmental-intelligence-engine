@@ -26,3 +26,5 @@ We will update it constantly.
 ## Notes
 
 - The `main.py` script uses the `pathway` library for streaming. The real `pathway` package does not support Windows; the code will run correctly in a compatible Linux/macOS environment with the library installed.
+
+- This project uses Pathway’s reactive streaming engine via `pw.io.python.read` to automatically recompute anomaly detection results as new environmental events arrive.

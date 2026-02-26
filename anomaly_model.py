@@ -24,12 +24,3 @@ class AnomalyDetector:
         pred = self.model.predict([[value]])
         return bool(pred[0] == -1)
 
-
-if __name__ == "__main__":
-    # tiny usage demo (collect baseline then test)
-    det = AnomalyDetector(buffer_size=10)
-    for i in range(10):
-        det.add_value(30 + i * 0.1)
-    print("trained:", det.trained)
-    print("is anomaly (normal):", det.is_anomaly(30.5))
-    print("is anomaly (spike):", det.is_anomaly(90.0))
