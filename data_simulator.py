@@ -15,23 +15,29 @@ def generate_reading():
     co2 += random.uniform(-8, 8)
     temp += random.uniform(-0.5, 0.5)
     
+    # Occasional anomaly spike
+    if random.random() < 0.05:
+        pm25 += random.uniform(30, 60)
+    
     # Clamp to realistic ranges
     pm25 = max(10, min(80, pm25))
     co2 = max(350, min(600, co2))
     temp = max(20, min(35, temp))
     
+    timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    
     return {
         'pm25': round(pm25, 1),
         'co2': round(co2, 1),
         'temp': round(temp, 1),
-        'timestamp': time.time()
+        'timestamp': timestamp
     }
 
 
 def stream_data():
     while True:
         reading = generate_reading()
-        print(f"PM2.5: {reading['pm25']} µg/m³ | CO2: {reading['co2']} ppm | Temp: {reading['temp']}°C")
+        print(f"[{reading['timestamp']}] PM2.5: {reading['pm25']} µg/m³ | CO2: {reading['co2']} ppm | Temp: {reading['temp']}°C")
         time.sleep(1)
 
 
