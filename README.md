@@ -22,3 +22,7 @@ This prototype will be extended to integrate with real-world environmental IoT s
 
 This is the Initial project setup. We are currently focusing on Core modules to be implemented.</br>
 We will update it constantly.
+
+## Notes
+
+- The `main.py` script uses the `pathway` library for streaming. The real `pathway` package does not support Windows; the code will run correctly in a compatible Linux/macOS environment with the library installed.

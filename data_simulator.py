@@ -32,14 +32,3 @@ def generate_reading():
         'temp': round(temp, 1),
         'timestamp': timestamp
     }
-
-
-def stream_data():
-    while True:
-        reading = generate_reading()
-        print(f"[{reading['timestamp']}] PM2.5: {reading['pm25']} µg/m³ | CO2: {reading['co2']} ppm | Temp: {reading['temp']}°C")
-        time.sleep(1)
-
-
-if __name__ == "__main__":
-    stream_data()
