@@ -2,7 +2,7 @@ import time
 import random
 
 # pull tuning parameters from config rather than hardcoding
-from src.config import SPIKE_PROBABILITY, DRIFT_RATE, TIME_FORMAT, SLEEP_INTERVAL
+from src.config import SPIKE_PROBABILITY, DRIFT_RATE, TIME_FORMAT
 
 # Environmental sensor state (globals for prototype)
 pm25 = 35.0

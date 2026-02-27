@@ -2,6 +2,9 @@ import time
 import logging
 import pathway as pw
 
+# suppress Pathway informational logs as early as possible
+logging.getLogger("pathway").setLevel(logging.ERROR)
+
 from src.data_simulator import generate_reading
 from src.anomaly_model import AnomalyDetector
 from src.config import SLEEP_INTERVAL, TIME_FORMAT
@@ -52,9 +55,6 @@ def main():
             src.temp
         )
     )
-
-    # reduce verbosity from pathway internals
-    logging.getLogger("pathway").setLevel(logging.ERROR)
 
     # show only the columns we care about and print update stream
     tbl = tbl.select(src.timestamp, src.pm25, src.co2, src.temp, tbl.anomaly)
