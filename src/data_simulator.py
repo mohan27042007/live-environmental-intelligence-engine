@@ -1,9 +1,8 @@
 import time
 import random
 
-# simple configuration
-SPIKE_PROB = 0.05          # chance of pollution event each reading
-DRIFT_RATE = 0.01          # slow upward drift per tick (applied after noise)
+# pull tuning parameters from config rather than hardcoding
+from src.config import SPIKE_PROBABILITY, DRIFT_RATE, TIME_FORMAT, SLEEP_INTERVAL
 
 # Environmental sensor state (globals for prototype)
 pm25 = 35.0
@@ -28,7 +27,7 @@ def generate_reading():
     temp += DRIFT_RATE * 0.02
     
     # Occasional anomaly spike with correlated perturbation
-    if random.random() < SPIKE_PROB:
+    if random.random() < SPIKE_PROBABILITY:
         pm25 += random.uniform(30, 60)
         co2 += random.uniform(5, 15)
         temp += random.uniform(0.5, 1.5)
@@ -37,8 +36,8 @@ def generate_reading():
     pm25 = max(10, min(100, pm25))
     co2 = max(350, min(650, co2))
     temp = max(20, min(40, temp))
-    
-    timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+
+    timestamp = time.strftime(TIME_FORMAT, time.localtime())
     
     return {
         'pm25': round(pm25, 1),

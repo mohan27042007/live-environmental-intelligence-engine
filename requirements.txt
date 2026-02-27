@@ -1,3 +1,5 @@
 numpy
 scikit-learn
 pathway
+pandas
+pyarrow

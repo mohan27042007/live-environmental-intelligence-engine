@@ -1,39 +1,41 @@
 from sklearn.ensemble import IsolationForest
 
+from src.config import BUFFER_SIZE, CONTAMINATION, RETRAIN_INTERVAL
+
+
 class AnomalyDetector:
-    def __init__(self, buffer_size=30, contamination=0.05):
-        self.buffer_size = buffer_size
+    def __init__(self):
+        self.buffer_size = BUFFER_SIZE
+        self.contamination = CONTAMINATION
+        self.retrain_interval = RETRAIN_INTERVAL
+
         self.buffer = []
         self.model = None
         self.trained = False
-        self.contamination = contamination
+        self.samples_since_retrain = 0
 
     def add_value(self, pm25, co2, temp):
-        # append new point and keep rolling buffer
         self.buffer.append([pm25, co2, temp])
         if len(self.buffer) > self.buffer_size:
             self.buffer.pop(0)
 
         if not self.trained:
-            # still collecting baseline data
-            print(f"collecting baseline data ({len(self.buffer)}/{self.buffer_size})")
-        
-        if len(self.buffer) == self.buffer_size:
-            if not self.trained:
+            if len(self.buffer) == self.buffer_size:
                 self._train_model()
-            else:
-                # periodic retraining on sliding window
-                self._train_model()
+                self.samples_since_retrain = 0
+            return
+
+        self.samples_since_retrain += 1
+        if self.samples_since_retrain >= self.retrain_interval:
+            self._train_model()
+            self.samples_since_retrain = 0
 
     def _train_model(self):
-        print("training isolation forest on current buffer")
         self.model = IsolationForest(
             contamination=self.contamination,
-            random_state=42
+            random_state=42,
         )
         self.model.fit(self.buffer)
-        if not self.trained:
-            print("model trained")
         self.trained = True
 
     def is_anomaly(self, pm25, co2, temp):
