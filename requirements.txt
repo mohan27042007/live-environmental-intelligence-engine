@@ -1,2 +1,5 @@
 pathway==0.29.1
 scikit-learn==1.6.1
+numpy==1.24.3
+pandas==2.0.3
+pyarrow==12.0.1
