@@ -14,9 +14,11 @@ def reading_stream():
 def main():
     detector = AnomalyDetector(buffer_size=30)
 
-    def detect(pm25):
-        detector.add_value(pm25)
-        return detector.is_anomaly(pm25)
+    def detect(pm25, co2, temp):
+        # predict first, then update buffer
+        anomaly = detector.is_anomaly(pm25, co2, temp)
+        detector.add_value(pm25, co2, temp)
+        return anomaly
 
     src = pw.io.python.read(reading_stream, schema={
         'timestamp': str,
@@ -25,8 +27,14 @@ def main():
         'temp': float,
     }, mode='streaming')
 
-    # apply model call via lambda to keep Pathway happy with row-wise function
-    tbl = src.with_columns(anomaly=pw.apply(lambda x: detect(x), src.pm25))
+    tbl = src.with_columns(
+        anomaly=pw.apply(
+            lambda p, c, t: detect(p, c, t),
+            src.pm25,
+            src.co2,
+            src.temp
+        )
+    )
 
     pw.io.print(tbl)
     pw.run()

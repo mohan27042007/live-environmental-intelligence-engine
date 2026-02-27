@@ -28,3 +28,5 @@ We will update it constantly.
 - The `main.py` script uses the `pathway` library for streaming. The real `pathway` package does not support Windows; the code will run correctly in a compatible Linux/macOS environment with the library installed.
 
 - This project uses Pathway’s reactive streaming engine via `pw.io.python.read` to automatically recompute anomaly detection results as new environmental events arrive.
+
+- The simulator includes configurable drift and correlated multi-feature anomalies (PM2.5, CO2, temp) to provide realistic training data.
