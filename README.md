@@ -83,3 +83,8 @@ README.md
 ## Future Work
 
 Integrate with real sensors, add persistence, expose HTTP API, etc.
+
+## Upgrades
+
+- Updated the requirements to include only essential packages for better performance and reduced image size.
+- Added instructions for setting up a minimal environment for testing.
