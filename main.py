@@ -11,6 +11,24 @@ def reading_stream():
         time.sleep(1)
 
 
+class ReadingSubject(pw.io.python.ConnectorSubject):
+    """ConnectorSubject wrapper that feeds simulated readings into Pathway."""
+    def run(self) -> None:
+        # run in a separate thread inside Pathway; feed values using `next`
+        while True:
+            r = generate_reading()
+            # next expects keyword args compatible with the schema passed to read
+            self.next(timestamp=r['timestamp'], pm25=r['pm25'], co2=r['co2'], temp=r['temp'])
+            time.sleep(1)
+
+
+class ReadingSchema(pw.Schema):
+    timestamp: str
+    pm25: float
+    co2: float
+    temp: float
+
+
 def main():
     detector = AnomalyDetector(buffer_size=30)
 
@@ -20,12 +38,8 @@ def main():
         detector.add_value(pm25, co2, temp)
         return anomaly
 
-    src = pw.io.python.read(reading_stream, schema={
-        'timestamp': str,
-        'pm25': float,
-        'co2': float,
-        'temp': float,
-    }, mode='streaming')
+    # Use a ConnectorSubject instance (required by current Pathway API)
+    src = pw.io.python.read(ReadingSubject(), schema=ReadingSchema, mode='streaming')
 
     tbl = src.with_columns(
         anomaly=pw.apply(
@@ -36,7 +50,8 @@ def main():
         )
     )
 
-    pw.io.print(tbl)
+    # Print the streaming update stream of the table
+    pw.debug.compute_and_print_update_stream(tbl)
     pw.run()
 
 
